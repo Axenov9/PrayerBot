@@ -14,6 +14,8 @@ DATABASE = os.path.join('sqlite:///' + BASE_DIR, DB_NAME)
 
 COOLDOWN = 3*60*60
 
+MAXLEVEL = 10
+
 LEVELS = {
     1: 'NOTHING',
     2: 'CAVE',

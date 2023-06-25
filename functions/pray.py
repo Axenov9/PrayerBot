@@ -34,7 +34,7 @@ def pray(user_id, chat_id, message_id, bot, db):
         if player.purse >= level.cost:
             player.player_level += 1
             player.purse -= level.cost
-            message = '*Ты перешел на новый уровень*'
+            message = f'*Ты перешел на {player.player_level} уровень*'
             bot.send_message(chat_id, message, parse_mode='Markdown', reply_to_message_id=message_id)
 
 

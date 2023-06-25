@@ -8,28 +8,30 @@ def me(user_id, chat_id, message_id, bot, db):
         to_next_level = level.cost - player.purse
     else:
         to_next_level = "у тебя максимальный уровень"
-    if (player.last_pray + (COOLDOWN)) <= round(time()):
-        message = f'''
+    if (player.last_pray + (COOLDOWN)) <= time():
+        text = f'''
 *{player.name}, вот информация о тебе:*
 
 Твой баланс: *{player.purse}*
 Твой заработок: *{level.income}*
-Твои реликвии: _Скоро в игре_
+Твой бонус реликвий: _Скоро в игре_
 Твой уровень: *{player.player_level}*
 Тебе осталось до следующего уровня: *{to_next_level}*
+Твой престиж: _Скоро в игре_
 Молитва *уже доступна*
 '''
 
-    elif (player.last_pray + (COOLDOWN)) >= round(time()):
-        message = f'''
+    elif (player.last_pray + (COOLDOWN)) >= time():
+        text = f'''
 *{player.name}, вот информация о тебе:*
 
 Твой баланс: *{player.purse}*
 Твой заработок: *{level.income}*
-Твои реликвии: _Скоро в игре_
+Твой бонус реликвий: _Скоро в игре_
 Твой уровень: *{player.player_level}*
 Тебе осталось до следующего уровня: *{to_next_level}*
-Следующая молитва через *{round((player.last_pray + (COOLDOWN) - (round(time())))/60)}* минут
+Твой престиж: _Скоро в игре_
+Следующая молитва через *{round((player.last_pray + (COOLDOWN) - (time()))/60)}* минут
 '''
 
-    bot.send_message(chat_id, message, parse_mode='Markdown', reply_to_message_id=message_id)
+    bot.send_message(chat_id, text, parse_mode='Markdown', reply_to_message_id=message_id)

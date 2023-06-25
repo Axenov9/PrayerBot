@@ -2,7 +2,7 @@ from handlers.handler import Handler
 from functions.pray import pray
 from functions.me import me
 from functions.check_player import check_player
-from functions.admin_func import op, skip, send_error
+from functions.admin_func import op, skip, add_level, add_purse, send_error
 
 from database.dbalchemy import DBManager
 
@@ -18,7 +18,7 @@ class HandlerCommands(Handler):
         @self.bot.message_handler(commands=['start'])
         def handle(message):
             print(message.from_user.username + ": " + message.text)
-            text=f'''
+            text = f'''
 Тебя привествует бот *священник*
 
 Напиши /pray чтобы помолиться и заработать денег
@@ -37,11 +37,12 @@ class HandlerCommands(Handler):
 Твой священник был создан, попробуй написать */pray* или */me*
 '''
                     self.DB.add_new_player(message.from_user.id, message.chat.id, message.from_user.first_name)
-                    self.bot.send_message(message.chat.id, text, parse_mode='Markdown', reply_to_message_id=message.message_id)
+                    self.bot.send_message(message.chat.id, text, parse_mode='Markdown',
+                                          reply_to_message_id=message.message_id)
                 except:
                     send_error(message, self.bot)
             else:
-                text = '''Такой игрок *уже существует*'''
+                text = 'Такой игрок *уже существует*'
                 self.bot.send_message(message.chat.id, text, parse_mode='Markdown',
                                       reply_to_message_id=message.message_id)
 
@@ -50,7 +51,7 @@ class HandlerCommands(Handler):
             print(message.from_user.username + ": " + message.text)
             try:
                 if check_player(message.from_user.id, message.chat.id, self.DB, self.bot, message):
-                    pray(message.from_user.id, message.chat.id,message.message_id , self.bot, self.DB)
+                    pray(message.from_user.id, message.chat.id, message.message_id, self.bot, self.DB)
             except:
                 send_error(message, self.bot)
                 # self.bot.send_message(message.chat.id, 'Не молись тут нахуй, нет еще этой функции')
@@ -59,7 +60,7 @@ class HandlerCommands(Handler):
         def handle(message):
             print(message.from_user.username + ": " + message.text)
             try:
-                me(message.from_user.id, message.chat.id,message.message_id , self.bot, self.DB)
+                me(message.from_user.id, message.chat.id, message.message_id, self.bot, self.DB)
             except:
                 send_error(message, self.bot)
                 # self.bot.send_message(message.chat.id, 'Че ме, баран чтоли?')
@@ -69,21 +70,46 @@ class HandlerCommands(Handler):
             print(message.from_user.username + ": " + message.text)
             if message.reply_to_message:
                 try:
-                    op(message.from_user.id, message.chat.id,message.message_id, message.reply_to_message.from_user.id, message.reply_to_message.from_user.first_name, self.bot, self.DB)
+                    op(message.from_user.id, message.chat.id, message.message_id, message.reply_to_message.from_user.id,
+                       message.reply_to_message.from_user.first_name, self.bot, self.DB)
                 except:
                     send_error(message, self.bot)
             else:
-                self.bot.send_message(message.chat.id, 'Ответьте на сообщение того, кого хотите сделать админом', reply_to_message_id=message.message_id)
+                text = 'Ответьте на сообщение того, кого хотите сделать админом'
+                self.bot.send_message(message.chat.id, text, reply_to_message_id=message.message_id)
 
         @self.bot.message_handler(commands=['skip'])
         def handle(message):
             print(message.from_user.username + ": " + message.text)
             try:
-                skip(message.from_user.id, message.chat.id,message.message_id, message, self.bot, self.DB)
+                skip(message.from_user.id, message.chat.id, message, self.bot, self.DB)
             except:
                 send_error(message, self.bot)
 
+        @self.bot.message_handler(commands=['add'])
+        def handle(message):
+            print(message.from_user.username + ": " + message.text)
+            # try:
+            if len(message.text.split()) >= 3:
+                if message.text.split()[1] == 'level':
+                    count = message.text.split()[2]
+                    # print(count)
+                    add_level(message, count, self.bot, self.DB)
+
+
+                if message.text.split()[1] == 'balance':
+                    count = message.text.split()[2]
+                    # print(count)
+                    add_purse(message, count, self.bot, self.DB)
+
+
+            else:
+                text = 'Введены *некорректные* аргументы для работы комманды'
+                self.bot.send_message(message.chat.id, text, parse_mode='Markdown', reply_to_message_id=message.message_id)
+            # except:
+            #     send_error(message, self.bot)
+
         # @self.bot.message_handler()
         # def handle(message):
-            # print(message.from_user.username + ": " + message.text)
-            # self.bot.send_message(message.chat.id, 'Нихуя не понял, можешь не повторять, иди нахуй')
+        # print(message.from_user.username + ": " + message.text)
+        # self.bot.send_message(message.chat.id, 'Нихуя не понял, можешь не повторять, иди нахуй')
