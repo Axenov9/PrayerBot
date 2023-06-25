@@ -63,6 +63,7 @@ def add_level(message, count, bot, db):
                 bot.send_message(message.chat.id, text, parse_mode='Markdown', reply_to_message_id=reply_to)
             else:
                 text = f'Введено *недопустимое* значение'
+                reply_to = message.message_id
                 bot.send_message(message.chat.id, text, parse_mode='Markdown', reply_to_message_id=reply_to)
 
         elif message.reply_to_message and not db.player_by_tgandchat(message.reply_to_message.from_user.id, message.chat.id):
@@ -112,6 +113,11 @@ def add_purse(message, count, bot, db):
                 elif count <0:
                     text = f'Ваш баланс понижен на *{0 - count}*\nТеперь ваш баланс составляет {player.purse}'
                 bot.send_message(message.chat.id, text, parse_mode='Markdown', reply_to_message_id=reply_to)
+            else:
+                text = f'Введено *недопустимое* значение'
+                reply_to = message.message_id
+                bot.send_message(message.chat.id, text, parse_mode='Markdown', reply_to_message_id=reply_to)
+
 
             level = db.level_by_id(player.player_level)
             if level.cost:
@@ -130,9 +136,7 @@ def add_purse(message, count, bot, db):
                     text = f'''Вы перешли на *{player.player_level}* уровень'''
                     reply_to = message.reply_to_message.message_id
                     bot.send_message(message.chat.id, text, parse_mode='Markdown', reply_to_message_id=reply_to)
-            else:
-                text = f'Введено *недопустимое* значение'
-                bot.send_message(message.chat.id, text, parse_mode='Markdown', reply_to_message_id=reply_to)
+
 
         elif message.reply_to_message and not db.player_by_tgandchat(message.reply_to_message.from_user.id, message.chat.id):
             text = f'*{message.reply_to_message.from_user.first_name}* не является доступным игроком'
