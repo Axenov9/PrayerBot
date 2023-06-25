@@ -12,6 +12,7 @@ class admin(Base):
     id = Column(Integer, primary_key=True)
     tg_id = Column(Integer)
     name = Column(String)
+    level = Column(Integer)
 
     # def __str__(self):
     #     return self.tg_id

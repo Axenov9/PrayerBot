@@ -1,5 +1,6 @@
 from telebot import TeleBot
 from settings import config
+import os
 
 from handlers.HandlerMain import HandlerMain
 
@@ -35,4 +36,5 @@ class RunBot:
 if __name__ == '__main__':
     bot = RunBot()
     bot.run_bot()
+
 

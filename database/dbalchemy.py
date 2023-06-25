@@ -44,6 +44,7 @@ class DBManager(metaclass=Singleton):
             return result[0]
         except:
             return False
+
     def level_by_id(self, id):
         result = self._session.query(level).filter_by(id=id).all()
         # print(result[0].income)
@@ -69,10 +70,11 @@ class DBManager(metaclass=Singleton):
         self._session.commit()
         self.close()
 
-    def add_new_admin(self, tg_id, name):
+    def add_new_admin(self, tg_id, name, parent_level):
         newadmin = admin(
             tg_id = tg_id,
-            name = name
+            name = name,
+            level = parent_level +1
         )
         self._session.add(newadmin)
         self._session.commit()
@@ -83,5 +85,11 @@ class DBManager(metaclass=Singleton):
             return True
         else:
             return False
+
+    def admin_by_tgid(self, tg_id):
+        result =  self._session.query(admin).filter_by(tg_id=tg_id).all()
+        self.close()
+        return result[0]
+
     def close(self):
         self._session.close()

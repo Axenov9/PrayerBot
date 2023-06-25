@@ -2,7 +2,7 @@ from handlers.handler import Handler
 from functions.pray import pray
 from functions.me import me
 from functions.check_player import check_player
-from functions.admin_func import op, skip
+from functions.admin_func import op, skip, send_error
 
 from database.dbalchemy import DBManager
 
@@ -14,48 +14,74 @@ class HandlerCommands(Handler):
         self.bot = bot
         self.DB = DBManager()
 
-    def command_start(self, message):
-        self.bot.send_message(message.chat.id, 'Иди нахуй, нет никакого старта')
-
     def handle(self):
         @self.bot.message_handler(commands=['start'])
         def handle(message):
             print(message.from_user.username + ": " + message.text)
-            if message.text == '/start':
-                self.command_start(message)
+            text=f'''
+Тебя привествует бот *священник*
+
+Напиши /pray чтобы помолиться и заработать денег
+
+Узнать информацию о себе можно через /me
+'''
+            self.bot.send_message(message.chat.id, text, parse_mode='Markdown', reply_to_message_id=message.message_id)
+
+        @self.bot.message_handler(commands=['create'])
+        def handle(message):
+            print(message.from_user.username + ": " + message.text)
+            if not check_player(message.from_user.id, message.chat.id, self.DB, self.bot, message):
+                try:
+                    text = f'''
+Приветсвую, *{message.from_user.first_name}*!
+Твой священник был создан, попробуй написать */pray* или */me*
+'''
+                    self.DB.add_new_player(message.from_user.id, message.chat.id, message.from_user.first_name)
+                    self.bot.send_message(message.chat.id, text, parse_mode='Markdown', reply_to_message_id=message.message_id)
+                except:
+                    send_error(message, self.bot)
+            else:
+                text = '''Такой игрок *уже существует*'''
+                self.bot.send_message(message.chat.id, text, parse_mode='Markdown',
+                                      reply_to_message_id=message.message_id)
 
         @self.bot.message_handler(commands=['pray'])
         def handle(message):
             print(message.from_user.username + ": " + message.text)
-
-            if message.text == '/pray' or message.text == '/pray@PriestPrayerBot':
-                check_player(message.from_user.id, message.chat.id, self.DB, message)
-                pray(message.from_user.id, message.chat.id,message.message_id , self.bot, self.DB)
+            try:
+                if check_player(message.from_user.id, message.chat.id, self.DB, self.bot, message):
+                    pray(message.from_user.id, message.chat.id,message.message_id , self.bot, self.DB)
+            except:
+                send_error(message, self.bot)
                 # self.bot.send_message(message.chat.id, 'Не молись тут нахуй, нет еще этой функции')
 
         @self.bot.message_handler(commands=['me'])
         def handle(message):
             print(message.from_user.username + ": " + message.text)
-            if message.text == '/me' or message.text == '/me@PriestPrayerBot':
+            try:
                 me(message.from_user.id, message.chat.id,message.message_id , self.bot, self.DB)
+            except:
+                send_error(message, self.bot)
                 # self.bot.send_message(message.chat.id, 'Че ме, баран чтоли?')
 
         @self.bot.message_handler(commands=['op'])
         def handle(message):
             print(message.from_user.username + ": " + message.text)
-            if message.text == '/op' or message.text == '/op@PriestPrayerBot':
-                if message.reply_to_message:
+            if message.reply_to_message:
+                try:
                     op(message.from_user.id, message.chat.id,message.message_id, message.reply_to_message.from_user.id, message.reply_to_message.from_user.first_name, self.bot, self.DB)
-                else:
-                    self.bot.send_message(message.chat.id, 'Ответьте на сообщение того, кого хотите сделать админом', reply_to_message_id=message.message_id)
-
+                except:
+                    send_error(message, self.bot)
+            else:
+                self.bot.send_message(message.chat.id, 'Ответьте на сообщение того, кого хотите сделать админом', reply_to_message_id=message.message_id)
 
         @self.bot.message_handler(commands=['skip'])
         def handle(message):
             print(message.from_user.username + ": " + message.text)
-            if message.text == '/skip' or message.text == '/skip@PriestPrayerBot':
-                skip(message.from_user.id, message.chat.id,message.message_id, self.bot, self.DB)
-
+            try:
+                skip(message.from_user.id, message.chat.id,message.message_id, message, self.bot, self.DB)
+            except:
+                send_error(message, self.bot)
 
         # @self.bot.message_handler()
         # def handle(message):
