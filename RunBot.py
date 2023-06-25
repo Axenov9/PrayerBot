@@ -34,7 +34,11 @@ class RunBot:
 
 
 if __name__ == '__main__':
-    bot = RunBot()
-    bot.run_bot()
+    try:
+        bot = RunBot()
+        bot.run_bot()
+    except:
+        bot = TeleBot(config.TOKEN)
+        bot.send_message(249562441, 'Бот завершил работу *из-за ошибки*', parse_mode='Markdown')
 
 

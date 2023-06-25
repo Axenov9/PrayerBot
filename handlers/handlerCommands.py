@@ -89,25 +89,25 @@ class HandlerCommands(Handler):
         @self.bot.message_handler(commands=['add'])
         def handle(message):
             print(message.from_user.username + ": " + message.text)
-            # try:
-            if len(message.text.split()) >= 3:
-                if message.text.split()[1] == 'level':
-                    count = message.text.split()[2]
-                    # print(count)
-                    add_level(message, count, self.bot, self.DB)
+            try:
+                if len(message.text.split()) >= 3:
+                    if message.text.split()[1] == 'level':
+                        count = message.text.split()[2]
+                        # print(count)
+                        add_level(message, count, self.bot, self.DB)
 
 
-                if message.text.split()[1] == 'balance':
-                    count = message.text.split()[2]
-                    # print(count)
-                    add_purse(message, count, self.bot, self.DB)
+                    if message.text.split()[1] == 'balance':
+                        count = message.text.split()[2]
+                        # print(count)
+                        add_purse(message, count, self.bot, self.DB)
 
 
-            else:
-                text = 'Введены *некорректные* аргументы для работы комманды'
-                self.bot.send_message(message.chat.id, text, parse_mode='Markdown', reply_to_message_id=message.message_id)
-            # except:
-            #     send_error(message, self.bot)
+                else:
+                    text = 'Введены *некорректные* аргументы для работы комманды'
+                    self.bot.send_message(message.chat.id, text, parse_mode='Markdown', reply_to_message_id=message.message_id)
+            except:
+                send_error(message, self.bot)
 
         # @self.bot.message_handler()
         # def handle(message):
