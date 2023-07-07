@@ -20,5 +20,10 @@ class relic(Base):
 
 RELICS_NAME = {
     'stone_cross': 'Каменный крест',
-    'iron_cross': 'Стальной крест'
+    'iron_cross': 'Стальной крест',
+    'gold_cross': 'Золотой крест',
+    'platinum_cross': 'Платиновый крест',
+    'iron_cadilo': 'Железное кадило',
+    'gold_cadilo': 'Золотое кадило',
+    'platinum_cadilo': 'Платиновое кадило'
 }

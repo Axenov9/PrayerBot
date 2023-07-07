@@ -41,11 +41,11 @@ class HandlerCommands(Handler):
         @self.bot.message_handler(commands=['pray'])
         def handle(message):
             print(message.from_user.username + ": " + message.text)
-            # try:
-            if check_player(message.from_user.id, message.chat.id, self.DB, self.bot, message):
-                pray(message.from_user.id, message.chat.id, message.message_id, self.bot, self.DB)
-            # except:
-            #     send_error(message, self.bot)
+            try:
+                if check_player(message.from_user.id, message.chat.id, self.DB, self.bot, message):
+                    pray(message.from_user.id, message.chat.id, message.message_id, self.bot, self.DB)
+            except:
+                send_error(message, self.bot)
             # self.bot.send_message(message.chat.id, 'Не молись тут нахуй, нет еще этой функции')
 
         @self.bot.message_handler(commands=['me'])
@@ -103,11 +103,11 @@ class HandlerCommands(Handler):
         @self.bot.message_handler(commands=['relics'])
         def handle(message):
             print(message.from_user.username + ": " + message.text)
-            # try:
-            if check_player(message.from_user.id, message.chat.id, self.DB, self.bot, message):
-                relics(message, self.bot, self.DB)
-            # except:
-            #     send_error(message, self.bot)
+            try:
+                if check_player(message.from_user.id, message.chat.id, self.DB, self.bot, message):
+                    relics(message, self.bot, self.DB)
+            except:
+                send_error(message, self.bot)
 
         @self.bot.callback_query_handler(func = lambda call: call.data == 'buy_relics')
         def handle(call):

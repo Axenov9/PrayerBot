@@ -8,7 +8,7 @@ def relics(message, bot, db):
 
     player = db.player_by_tgandchat(user_id, chat_id)
     relics = db.relics_by_player(player)
-    print(relics)
+    # print(relics)
     if relics:
         text = messages['rel_start'].format(player.name)
         multipliyer = 1
