@@ -9,6 +9,7 @@ from settings import config
 from models.player import player
 from models.level import level
 from models.admin import admin
+from models.relic import relic
 
 
 class Singleton(type):
@@ -51,9 +52,9 @@ class DBManager(metaclass=Singleton):
 
         return result[0]
 
-    def update_player_inf(self, id, purse, level, last_pray):
+    def update_player_inf(self, id, purse, level, last_pray, relics):
         self._session.query(player).filter_by(id=id).update(
-            {"purse": purse, "player_level": level, "last_pray": last_pray}, synchronize_session='fetch')
+            {"purse": purse, "player_level": level, "last_pray": last_pray, "relics": relics}, synchronize_session='fetch')
         self._session.commit()
         self.close()
 
@@ -64,7 +65,8 @@ class DBManager(metaclass=Singleton):
             player_level=1,
             purse=0,
             last_pray=0,
-            name=name
+            name=name,
+            relics=' '
         )
         self._session.add(newplayer)
         self._session.commit()
@@ -91,5 +93,35 @@ class DBManager(metaclass=Singleton):
         self.close()
         return result[0]
 
+    def relic_by_id(self, id):
+        result = self._session.query(relic).filter_by(id=id).all()
+        self.close()
+        return result[0]
+
+    def relics_by_player(self, player):
+        result = []
+        if player.relics:
+            for relic_id in player.relics.split():
+                res = self._session.query(relic).filter_by(id=relic_id).all()[0]
+                result.append(res)
+            self.close()
+            return result
+        else:
+            return False
+
+    def relic_multiplier_by_player(self, player):
+        multiplier = 1
+        if player.relics:
+            for relic_id in player.relics.split():
+                res = self._session.query(relic).filter_by(id=relic_id).all()[0]
+                multiplier += res.multiplier
+            self.close()
+        return multiplier
+
+
+    def all_relics(self):
+        result = self._session.query(relic).all()
+        self.close()
+        return result
     def close(self):
         self._session.close()

@@ -20,7 +20,7 @@ def skip(tg_id, chat_id, message, bot, db):
         if message.reply_to_message and db.player_by_tgandchat(message.reply_to_message.from_user.id, message.chat.id):
             player = db.player_by_tgandchat(message.reply_to_message.from_user.id, chat_id)
             player.last_pray -= COOLDOWN
-            db.update_player_inf(player.id, player.purse, player.player_level, player.last_pray)
+            db.update_player_inf(player.id, player.purse, player.player_level, player.last_pray, player.relics)
             reply_to = message.reply_to_message.message_id
             text = 'Откат на молитву *снят*'
             bot.send_message(chat_id, text, parse_mode='Markdown', reply_to_message_id=reply_to)
@@ -33,7 +33,7 @@ def skip(tg_id, chat_id, message, bot, db):
         else:
             player = db.player_by_tgandchat(tg_id, chat_id)
             player.last_pray -= COOLDOWN
-            db.update_player_inf(player.id, player.purse, player.player_level, player.last_pray)
+            db.update_player_inf(player.id, player.purse, player.player_level, player.last_pray, player.relics)
             reply_to = message.message_id
             text = 'Откат на молитву *снят*'
             bot.send_message(chat_id, text, parse_mode='Markdown', reply_to_message_id=reply_to)
@@ -54,7 +54,7 @@ def add_level(message, count, bot, db):
                     player.player_level = MAXLEVEL
                 elif player.player_level < 1:
                     player.player_level = 1
-                db.update_player_inf(player.id, player.purse, player.player_level, player.last_pray)
+                db.update_player_inf(player.id, player.purse, player.player_level, player.last_pray, player.relics)
                 reply_to = message.reply_to_message.message_id
                 if count >= 0:
                     text = f'Ваш уровень повышен на *{count}*\nВы перешли на *{player.player_level}* уровень'
@@ -80,7 +80,7 @@ def add_level(message, count, bot, db):
                     player.player_level = MAXLEVEL
                 elif player.player_level < 1:
                     player.player_level = 1
-                db.update_player_inf(player.id, player.purse, player.player_level, player.last_pray)
+                db.update_player_inf(player.id, player.purse, player.player_level, player.last_pray, player.relics)
                 reply_to = message.message_id
                 if count >= 0:
                     text = f'Ваш уровень повышен на *{count}*\nВы перешли на *{player.player_level}* уровень'
@@ -106,7 +106,7 @@ def add_purse(message, count, bot, db):
                 player.purse += count
                 if player.purse < 0:
                     player.purse = 0
-                db.update_player_inf(player.id, player.purse, player.player_level, player.last_pray)
+                db.update_player_inf(player.id, player.purse, player.player_level, player.last_pray, player.relics)
                 reply_to = message.reply_to_message.message_id
                 if count >= 0:
                     text = f'Ваш баланс повышен на *{count}*\nТеперь ваш баланс составляет {player.purse}'
@@ -127,7 +127,7 @@ def add_purse(message, count, bot, db):
                         if level.cost and player.purse >= level.cost:
                             player.player_level += 1
                             player.purse -= level.cost
-                            db.update_player_inf(player.id, player.purse, player.player_level, player.last_pray)
+                            db.update_player_inf(player.id, player.purse, player.player_level, player.last_pray, player.relics)
                         # text = '*Ты перешел на новый уровень*'
                         # reply_to = message.message_id
                         # bot.send_message(message.chat.id, text, parse_mode='Markdown', reply_to_message_id=reply_to)
@@ -150,7 +150,7 @@ def add_purse(message, count, bot, db):
                 player.purse += count
                 if player.purse < 0:
                     player.purse = 0
-                db.update_player_inf(player.id, player.purse, player.player_level, player.last_pray)
+                db.update_player_inf(player.id, player.purse, player.player_level, player.last_pray, player.relics)
                 reply_to = message.message_id
                 if count >= 0:
                     text = f'Ваш баланс повышен на *{count}*\nТеперь ваш баланс составляет {player.purse}'
@@ -170,7 +170,7 @@ def add_purse(message, count, bot, db):
                         if level.cost and player.purse >= level.cost:
                             player.player_level += 1
                             player.purse -= level.cost
-                            db.update_player_inf(player.id, player.purse, player.player_level, player.last_pray)
+                            db.update_player_inf(player.id, player.purse, player.player_level, player.last_pray, player.relics)
                             # text = '*Ты перешел на новый уровень*'
                             # reply_to = message.message_id
                             # bot.send_message(message.chat.id, text, parse_mode='Markdown', reply_to_message_id=reply_to)

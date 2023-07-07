@@ -14,7 +14,7 @@ def me(user_id, chat_id, message_id, bot, db):
 
 Твой баланс: *{player.purse}*
 Твой заработок: *{level.income}*
-Твой бонус реликвий: _Скоро в игре_
+Твой бонус реликвий: *{db.relic_multiplier_by_player(player)}*
 Твой уровень: *{player.player_level}*
 Тебе осталось до следующего уровня: *{to_next_level}*
 Твой престиж: _Скоро в игре_
@@ -27,7 +27,7 @@ def me(user_id, chat_id, message_id, bot, db):
 
 Твой баланс: *{player.purse}*
 Твой заработок: *{level.income}*
-Твой бонус реликвий: _Скоро в игре_
+Твой бонус реликвий: *{db.relic_multiplier_by_player(player)}*
 Твой уровень: *{player.player_level}*
 Тебе осталось до следующего уровня: *{to_next_level}*
 Твой престиж: _Скоро в игре_

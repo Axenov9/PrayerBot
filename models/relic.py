@@ -6,17 +6,19 @@ from sqlalchemy.orm import declarative_base
 Base = declarative_base()
 
 
-class player(Base):
+class relic(Base):
 
-    __tablename__ = 'player'
+    __tablename__ = 'relic'
 
     id = Column(Integer, primary_key=True)
-    tg_id = Column(Integer)
-    chat_id = Column(Integer)
-    player_level = Column(Integer)
-    purse = Column(Integer)
-    last_pray = Column(Integer)
     name = Column(String)
-    relics = Column(String)
+    multiplier = Column(Integer)
+    level_req = Column(Integer)
+    price = Column(Integer)
     # def __str__(self):
     #     return f"{self.tg_id}"
+
+RELICS_NAME = {
+    'stone_cross': 'Каменный крест',
+    'iron_cross': 'Стальной крест'
+}

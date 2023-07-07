@@ -6,6 +6,7 @@ from settings.messages import messages
 def pray(user_id, chat_id, message_id, bot, db):
     player = db.player_by_tgandchat(user_id, chat_id)
     level = db.level_by_id(player.player_level)
+    relic_multiplier = db.relic_multiplier_by_player(player)
     income_levels = [
         0, 0.2, 0.4, 0.7, 0.9, 1, 1.4, 1.8, 2.4, 3
     ]
@@ -14,7 +15,7 @@ def pray(user_id, chat_id, message_id, bot, db):
     ]
     # print(round(time()))
     if (player.last_pray + (COOLDOWN)) <= round(time()):
-        income = round(random.choices(income_levels, weights=income_weights)[0] * level.income)
+        income = round(random.choices(income_levels, weights=income_weights)[0] * level.income * relic_multiplier)
         player.purse += income
         text = messages['income'].format(income, player.purse)
         bot.send_message(chat_id, text, parse_mode='Markdown', reply_to_message_id=message_id)
@@ -33,5 +34,5 @@ def pray(user_id, chat_id, message_id, bot, db):
             bot.send_message(chat_id, text, parse_mode='Markdown', reply_to_message_id=message_id)
 
 
-    db.update_player_inf(player.id, player.purse, player.player_level, player.last_pray)
+    db.update_player_inf(player.id, player.purse, player.player_level, player.last_pray, player.relics)
 

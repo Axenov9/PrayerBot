@@ -3,10 +3,11 @@ from functions.admin_func import op, skip, add_level, add_purse, send_error
 from functions.check_player import check_player
 from functions.me import me
 from functions.pray import pray
+from functions.relics import relics, buy_relics, buy_relic_by_id
 from handlers.handler import Handler
 from settings.messages import messages
 
-
+from json import dumps
 class HandlerCommands(Handler):
 
     def __init__(self, bot):
@@ -40,11 +41,11 @@ class HandlerCommands(Handler):
         @self.bot.message_handler(commands=['pray'])
         def handle(message):
             print(message.from_user.username + ": " + message.text)
-            try:
-                if check_player(message.from_user.id, message.chat.id, self.DB, self.bot, message):
-                    pray(message.from_user.id, message.chat.id, message.message_id, self.bot, self.DB)
-            except:
-                send_error(message, self.bot)
+            # try:
+            if check_player(message.from_user.id, message.chat.id, self.DB, self.bot, message):
+                pray(message.from_user.id, message.chat.id, message.message_id, self.bot, self.DB)
+            # except:
+            #     send_error(message, self.bot)
             # self.bot.send_message(message.chat.id, 'Не молись тут нахуй, нет еще этой функции')
 
         @self.bot.message_handler(commands=['me'])
@@ -99,6 +100,34 @@ class HandlerCommands(Handler):
             except:
                 send_error(message, self.bot)
 
+        @self.bot.message_handler(commands=['relics'])
+        def handle(message):
+            print(message.from_user.username + ": " + message.text)
+            # try:
+            if check_player(message.from_user.id, message.chat.id, self.DB, self.bot, message):
+                relics(message, self.bot, self.DB)
+            # except:
+            #     send_error(message, self.bot)
+
+        @self.bot.callback_query_handler(func = lambda call: call.data == 'buy_relics')
+        def handle(call):
+            print(call.from_user.username + ": " + call.data)
+            # print(call)
+            if call.from_user.id == call.message.reply_to_message.from_user.id:
+                buy_relics(call, self.bot, self.DB)
+            else:
+                self.bot.answer_callback_query(call.id, text=messages['not_sender_call'], show_alert=True)
+
+        @self.bot.callback_query_handler(func=lambda call: 'buy' in call.data)
+        def handle(call):
+            print(call.from_user.username + ": " + call.data)
+            if call.from_user.id == call.message.reply_to_message.from_user.id:
+                buy_relic_by_id(call, self.bot, self.DB)
+            else:
+                self.bot.answer_callback_query(call.id, text=messages['not_sender_call'], show_alert=True)
+
+
+            # self.bot.send_message(call.message.chat.id, call.data)
         # @self.bot.message_handler()
         # def handle(message):
         # print(message.from_user.username + ": " + message.text)
