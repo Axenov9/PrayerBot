@@ -12,7 +12,7 @@ BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 
 DATABASE = os.path.join('sqlite:///' + BASE_DIR, DB_NAME)
 
-COOLDOWN = 3*60*60
+COOLDOWN = 3 * 60 * 60
 
 MAXLEVEL = 10
 

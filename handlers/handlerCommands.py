@@ -1,10 +1,10 @@
-from handlers.handler import Handler
-from functions.pray import pray
-from functions.me import me
-from functions.check_player import check_player
-from functions.admin_func import op, skip, add_level, add_purse, send_error
-
 from database.dbalchemy import DBManager
+from functions.admin_func import op, skip, add_level, add_purse, send_error
+from functions.check_player import check_player
+from functions.me import me
+from functions.pray import pray
+from handlers.handler import Handler
+from settings.messages import messages
 
 
 class HandlerCommands(Handler):
@@ -18,13 +18,7 @@ class HandlerCommands(Handler):
         @self.bot.message_handler(commands=['start'])
         def handle(message):
             print(message.from_user.username + ": " + message.text)
-            text = f'''
-Тебя привествует бот *священник*
-
-Напиши /pray чтобы помолиться и заработать денег
-
-Узнать информацию о себе можно через /me
-'''
+            text = messages['start']
             self.bot.send_message(message.chat.id, text, parse_mode='Markdown', reply_to_message_id=message.message_id)
 
         @self.bot.message_handler(commands=['create'])
@@ -32,10 +26,7 @@ class HandlerCommands(Handler):
             print(message.from_user.username + ": " + message.text)
             if not check_player(message.from_user.id, message.chat.id, self.DB, self.bot, message):
                 try:
-                    text = f'''
-Приветсвую, *{message.from_user.first_name}*!
-Твой священник был создан, попробуй написать */pray* или */me*
-'''
+                    text = messages['create'].format(message.from_user.first_name)
                     self.DB.add_new_player(message.from_user.id, message.chat.id, message.from_user.first_name)
                     self.bot.send_message(message.chat.id, text, parse_mode='Markdown',
                                           reply_to_message_id=message.message_id)
@@ -54,7 +45,7 @@ class HandlerCommands(Handler):
                     pray(message.from_user.id, message.chat.id, message.message_id, self.bot, self.DB)
             except:
                 send_error(message, self.bot)
-                # self.bot.send_message(message.chat.id, 'Не молись тут нахуй, нет еще этой функции')
+            # self.bot.send_message(message.chat.id, 'Не молись тут нахуй, нет еще этой функции')
 
         @self.bot.message_handler(commands=['me'])
         def handle(message):
@@ -96,16 +87,15 @@ class HandlerCommands(Handler):
                         # print(count)
                         add_level(message, count, self.bot, self.DB)
 
-
                     if message.text.split()[1] == 'balance':
                         count = message.text.split()[2]
                         # print(count)
                         add_purse(message, count, self.bot, self.DB)
 
-
                 else:
-                    text = 'Введены *некорректные* аргументы для работы комманды'
-                    self.bot.send_message(message.chat.id, text, parse_mode='Markdown', reply_to_message_id=message.message_id)
+                    text = messages['inc_args']
+                    self.bot.send_message(message.chat.id, text, parse_mode='Markdown',
+                                          reply_to_message_id=message.message_id)
             except:
                 send_error(message, self.bot)
 

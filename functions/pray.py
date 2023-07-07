@@ -1,6 +1,7 @@
 import random
 from time import time
 from settings.config import COOLDOWN
+from settings.messages import messages
 
 def pray(user_id, chat_id, message_id, bot, db):
     player = db.player_by_tgandchat(user_id, chat_id)
@@ -15,27 +16,21 @@ def pray(user_id, chat_id, message_id, bot, db):
     if (player.last_pray + (COOLDOWN)) <= round(time()):
         income = round(random.choices(income_levels, weights=income_weights)[0] * level.income)
         player.purse += income
-
-        message = f'''
-Ты заработал *{income}* монет
-Твой баланс составляет *{player.purse}* монет
-'''
-        bot.send_message(chat_id, message, parse_mode='Markdown', reply_to_message_id=message_id)
+        text = messages['income'].format(income, player.purse)
+        bot.send_message(chat_id, text, parse_mode='Markdown', reply_to_message_id=message_id)
         player.last_pray = round(time())
 
     elif (player.last_pray + (COOLDOWN)) >= round(time()):
-        message = f'''
-*Время еще не пришло*
-Попробуй снова через *{round((player.last_pray + (COOLDOWN) - (round(time()) ))/60)}* минут
-'''
-        bot.send_message(chat_id, message, parse_mode='Markdown', reply_to_message_id=message_id)
+        timeout = round((player.last_pray + (COOLDOWN) - (time() ))/60)
+        text = messages['timeout'].format(timeout)
+        bot.send_message(chat_id, text, parse_mode='Markdown', reply_to_message_id=message_id)
 
     if level.cost:
         if player.purse >= level.cost:
             player.player_level += 1
             player.purse -= level.cost
-            message = f'*Ты перешел на {player.player_level} уровень*'
-            bot.send_message(chat_id, message, parse_mode='Markdown', reply_to_message_id=message_id)
+            text = messages['level_up'].format(player.player_level)
+            bot.send_message(chat_id, text, parse_mode='Markdown', reply_to_message_id=message_id)
 
 
     db.update_player_inf(player.id, player.purse, player.player_level, player.last_pray)

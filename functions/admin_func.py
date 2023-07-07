@@ -1,5 +1,5 @@
 from settings.config import COOLDOWN, MAXLEVEL
-
+from settings.messages import messages
 
 def op(tg_id, chat_id, message_id, user_tg_id, name, bot, db):
     if db.is_admin(tg_id) and db.admin_by_tgid(tg_id).level == 0:
@@ -11,7 +11,7 @@ def op(tg_id, chat_id, message_id, user_tg_id, name, bot, db):
             message = 'Этот человек *уже админ*'
             bot.send_message(chat_id, message, parse_mode='Markdown', reply_to_message_id=message_id)
     else:
-        message = 'У вас *нет прав* на эту команду'
+        message = messages['ne_rights']
         bot.send_message(chat_id, message, parse_mode='Markdown', reply_to_message_id=message_id)
 
 
@@ -39,7 +39,7 @@ def skip(tg_id, chat_id, message, bot, db):
             bot.send_message(chat_id, text, parse_mode='Markdown', reply_to_message_id=reply_to)
 
     else:
-        text = 'У вас *нет прав* на эту команду'
+        text = message = messages['ne_rights']
         reply_to = message.message_id
         bot.send_message(chat_id, text, parse_mode='Markdown', reply_to_message_id=reply_to)
 
@@ -62,7 +62,7 @@ def add_level(message, count, bot, db):
                     text = f'Ваш уровень понижен на *{0 - count}*\nВы перешли на *{player.player_level}* уровень'
                 bot.send_message(message.chat.id, text, parse_mode='Markdown', reply_to_message_id=reply_to)
             else:
-                text = f'Введено *недопустимое* значение'
+                text = messages['inc_value']
                 reply_to = message.message_id
                 bot.send_message(message.chat.id, text, parse_mode='Markdown', reply_to_message_id=reply_to)
 
@@ -88,12 +88,12 @@ def add_level(message, count, bot, db):
                     text = f'Ваш уровень понижен на *{0 - count}*\nВы перешли на *{player.player_level}* уровень'
                 bot.send_message(message.chat.id, text, parse_mode='Markdown', reply_to_message_id=reply_to)
             else:
-                text = f'Введено *недопустимое* значение'
+                text = messages['inc_value']
                 reply_to = message.message_id
                 bot.send_message(message.chat.id, text, parse_mode='Markdown', reply_to_message_id=reply_to)
 
     else:
-        text = 'У вас *нет прав* на эту команду'
+        text = message = messages['ne_rights']
         bot.send_message(message.chat.id, text, parse_mode='Markdown', reply_to_message_id=message.message_id)
 
 
@@ -114,7 +114,7 @@ def add_purse(message, count, bot, db):
                     text = f'Ваш баланс понижен на *{0 - count}*\nТеперь ваш баланс составляет {player.purse}'
                 bot.send_message(message.chat.id, text, parse_mode='Markdown', reply_to_message_id=reply_to)
             else:
-                text = f'Введено *недопустимое* значение'
+                text = messages['inc_value']
                 reply_to = message.message_id
                 bot.send_message(message.chat.id, text, parse_mode='Markdown', reply_to_message_id=reply_to)
 
@@ -133,7 +133,7 @@ def add_purse(message, count, bot, db):
                         # bot.send_message(message.chat.id, text, parse_mode='Markdown', reply_to_message_id=reply_to)
                         else:
                             break
-                    text = f'''Вы перешли на *{player.player_level}* уровень'''
+                    text = messages['level_up'].format(player.player_level)
                     reply_to = message.reply_to_message.message_id
                     bot.send_message(message.chat.id, text, parse_mode='Markdown', reply_to_message_id=reply_to)
 
@@ -158,7 +158,7 @@ def add_purse(message, count, bot, db):
                     text = f'Ваш баланс понижен на *{0 - count}*\nТеперь ваш баланс составляет {player.purse}'
                 bot.send_message(message.chat.id, text, parse_mode='Markdown', reply_to_message_id=reply_to)
             else:
-                text = f'Введено *недопустимое* значение'
+                text = message['inc_value']
                 reply_to = message.message_id
                 bot.send_message(message.chat.id, text, parse_mode='Markdown', reply_to_message_id=reply_to)
 
@@ -176,16 +176,16 @@ def add_purse(message, count, bot, db):
                             # bot.send_message(message.chat.id, text, parse_mode='Markdown', reply_to_message_id=reply_to)
                         else:
                             break
-                    text = f'''Вы перешли на *{player.player_level}* уровень'''
+                    text = messages['level_up'].format(player.player_level)
                     reply_to = message.message_id
                     bot.send_message(message.chat.id, text, parse_mode='Markdown', reply_to_message_id=reply_to)
 
     else:
-        text = 'У вас *нет прав* на эту команду'
+        text = message = messages['ne_rights']
         bot.send_message(message.chat.id, text, parse_mode='Markdown', reply_to_message_id=message.message_id)
 
 
 
 def send_error(message, bot):
-    text = 'Что-то *пошло не так*'
+    text = messages['err']
     bot.send_message(message.chat.id, text, parse_mode='Markdown', reply_to_message_id=message.message_id)
