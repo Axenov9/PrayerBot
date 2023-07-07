@@ -13,7 +13,7 @@ def relics(message, bot, db):
         text = messages['rel_start'].format(player.name)
         multipliyer = 1
         for relic in relics:
-            text = text + messages['relic_disc'].format(RELICS_NAME[relic.name], relic.multiplier) + ' '
+            text = text + messages['relic_disc'].format(RELICS_NAME[relic.name], relic.multiplier) + '\n'
             multipliyer += relic.multiplier
         text = text + messages['rel_end'].format(round(multipliyer, 1))
     else:
@@ -53,6 +53,6 @@ def buy_relic_by_id(call, bot, db):
     else:
         text = messages['not_enough_money']
 
-    bot.edit_message_text(text, call.message.chat.id, call.message.id, parse_mode='Markdown')
+    bot.edit_message_text(text, call.message.chat.id, call.message.id, parse_mode='Markdown', reply_markup=buy_markup())
 
     db.update_player_inf(player.id, player.purse, player.player_level, player.last_pray, player.relics)
