@@ -116,7 +116,7 @@ class DBManager(metaclass=Singleton):
                 res = self._session.query(relic).filter_by(id=relic_id).all()[0]
                 multiplier += res.multiplier
             self.close()
-        return multiplier
+        return round(multiplier, 1)
 
 
     def all_relics(self):

@@ -15,7 +15,7 @@ def relics(message, bot, db):
         for relic in relics:
             text = text + messages['relic_disc'].format(RELICS_NAME[relic.name], relic.multiplier) + ' '
             multipliyer += relic.multiplier
-        text = text + messages['rel_end'].format(multipliyer)
+        text = text + messages['rel_end'].format(round(multipliyer, 1))
     else:
         text = messages['no_relics']
 
